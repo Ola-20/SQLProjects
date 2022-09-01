@@ -1,0 +1,122 @@
+--Below are the exploration and validation result for the sales insight data analytics
+
+-- SHOW DIMENSION TABLES
+SELECT * FROM sales.markets;
+SELECT * FROM sales.products;
+SELECT count(*) FROM customers;
+
+
+
+-- CHECK FOR ANY REPEATED ENTRY IN BOTH DIMENSION AND FACT TABLES
+SELECT DISTINCT * FROM sales.products;
+SELECT DISTINCT * FROM sales.transactions;
+
+
+
+
+-- SHOW TOTAL TRANSACTIONS
+SELECT * FROM transactions;
+SELECT count(*) FROM sales.transactions;
+
+
+
+-- TOTAL REVENUE IN ALL YEARS UNDER REVIEW
+SELECT sum(sales_amount) FROM transactions;
+
+
+
+-- REVENUE IN SELECTED YEAR
+
+SELECT SUM(transactions.sales_amount) FROM transactions INNER JOIN date 
+ON transactions.order_date=date.date WHERE date.year=2020;
+
+
+
+-- TO SEE REVENUE FOR EACH month 
+
+SELECT date.cy_date,date.year,SUM(transactions.sales_amount) AS Monthly_Revenue
+FROM transactions INNER JOIN date ON transactions.order_date = date.date
+GROUP BY date.cy_date
+ORDER BY Monthly_Revenue DESC;
+
+
+
+-- TO SEE REVENUE FOR EACH YEAR 
+
+SELECT date.year, SUM(transactions.sales_amount) AS Yearly_Revenue
+FROM transactions INNER JOIN date ON transactions.order_date = date.date
+GROUP BY date.year
+ORDER BY Yearly_Revenue DESC;
+
+
+
+-- TO KNOW THE YEARS WITH MINIMUM REVENUE WE CREATE A TEMP TABLE
+
+DROP TABLE IF EXISTS YearRev;
+
+CREATE TEMPORARY TABLE YearRev (
+years int, yearly_rev int
+);
+
+-- TO SEE THE YEAR WITH MIN REVENUE 
+
+INSERT INTO YearRev
+SELECT date.year, SUM(transactions.sales_amount) AS Yearly_Revenue
+FROM transactions INNER JOIN date ON transactions.order_date = date.date
+GROUP BY date.year
+ORDER BY Yearly_Revenue DESC;
+
+SELECT years, min(yearly_rev) FROM YearRev
+
+
+
+-- TO KNOW THE TOTAL TRASANCTION NUMBER BY CHENNAI (HENCE ANY OTHER MARKETS)
+
+SELECT count(*) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code
+WHERE ma.markets_name = "Chennai";
+
+
+
+-- TO KNOW THE TOTAL REVENUE TRANSACTION FROM ANY MARKET
+SELECT sum(sales_amount) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code
+WHERE ma.markets_name = "Chennai" AND tr.currency LIKE '_SD';
+
+
+
+-- THE TOTAL REVENUE FROM A PARTICULAR MARKET IN A CHOSEN MONTH
+SELECT sum(sales_amount) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code INNER JOIN sales.date AS d 
+ON tr.order_date = d.date
+WHERE ma.markets_name = "chennai" AND d.cy_date = '2018-02-01';
+
+
+
+-- THE TOTAL REVENUE FROM A PARTICULAR MARKET IN A CHOSEN Year
+SELECT sum(sales_amount) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code INNER JOIN sales.date AS d 
+ON tr.order_date = d.date
+WHERE ma.markets_name = "chennai" AND d.year = '2018';
+
+
+
+-- TOTAL PROFIT MARGIN UNDER REVIEW
+
+SELECT sum(profit_margin) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code INNER JOIN sales.date AS d 
+ON tr.order_date = d.date;
+
+
+
+-- TOTAL PROFIT MARGIN IN A MARKET AT A GIVEN YEAR
+
+SELECT sum(profit_margin) FROM transactions AS tr INNER JOIN markets AS ma
+ON tr.market_code = ma.markets_code INNER JOIN sales.date AS d 
+ON tr.order_date = d.date
+WHERE ma.markets_name = "chennai" AND d.year = '2018';
+
+
+
+
+ 
