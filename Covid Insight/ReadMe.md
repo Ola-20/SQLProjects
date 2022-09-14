@@ -1,5 +1,5 @@
 •	The Data set for this project can be downloaded from this link below
-https://ourworldindata.org/coronavirus
+https://ourworldindata.org/coronavirus (Data is updated daily)
 
 •	This project seeks to give insight to the Covid cases worldwide, and on location bases
 
