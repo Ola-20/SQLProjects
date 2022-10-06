@@ -21,7 +21,7 @@ From New_Project..covid
 where location like '%canada%'
 Order by 1,2
 --		IT was seen that as at Aug/2022/02 the total death in canada is 42,969 and 
---		any one infected has about 15 chance of dying from the disease(compare with same period LY in Power BI)
+--		any one infected has about 15 chance of dying from the disease(compare with same period LY in Power BI/Tableu)
 
 --4) TOTAL CASES vs population (Percent of population with infection)
 Select location, date, total_cases, population, (total_cases/population)*100 as infection_rate
